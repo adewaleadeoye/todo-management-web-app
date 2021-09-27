@@ -1,9 +1,5 @@
-import type { NextPage } from 'next'
+const Login = () => {
+  return <></>;
+};
 
-const Login: NextPage = () => {
-    return (
-        <></>
-    )
-}
-
-export default Login
+export default Login;
