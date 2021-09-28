@@ -1,6 +1,6 @@
 type UserType = {
   email: string;
-  password: string;
+  password?: string;
   name: string;
   isLoggedIn: boolean;
 };
