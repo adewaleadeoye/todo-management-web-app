@@ -7,12 +7,15 @@ import { readTodo } from '../../lib/api';
 import { updateTodoItem } from '../../services/todoService';
 import Layout from '../../components/layout/layout';
 import { Container } from '@material-ui/core';
+import withSession from '../../lib/session';
+import UserType from '../../types/user';
 
 type Props = {
   todo: TodoType;
+  user: UserType;
 };
 
-const Todo = ({ todo }: Props) => {
+const Todo = ({ todo, user }: Props) => {
   const router = useRouter();
 
   const updateTodo = async (todo: TodoType) => {
@@ -25,7 +28,7 @@ const Todo = ({ todo }: Props) => {
   }
 
   return (
-    <Layout title={todo.todoTitle}>
+    <Layout title={todo.todoTitle} isAuthenticated={user.isLoggedIn}>
       <Container maxWidth="md">
         <TodoForm edit={true} todo={todo} handleTodo={updateTodo} />
       </Container>
@@ -33,14 +36,25 @@ const Todo = ({ todo }: Props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const slug = context?.params?.slug;
+export const getServerSideProps: GetServerSideProps = withSession(
+  async ({ params, req, res }: any) => {
+    const user = req.session.get('user');
 
-  const todo = readTodo(slug);
+    if (!user) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+    const slug = params?.slug;
+    const todo = readTodo(slug);
 
-  return {
-    props: { todo },
-  };
-};
+    return {
+      props: { user: req.session.get('user'), todo },
+    };
+  }
+);
 
 export default Todo;

@@ -1,5 +1,6 @@
 import { fetchTodos, findTodo, saveTodos } from '../../../lib/api';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { csrf } from '../../../lib/csrf';
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -12,12 +13,11 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
       todos.push(todo);
       saveTodos(todos);
       res.status(200).json(todos);
+    } else {
+      throw 'The Todo item could not be added';
     }
   } catch (error) {
-    return res.status(500).json({
-      status: 'Error',
-      data: { message: 'Could not create todo', error },
-    });
+    res.status(500).json({ error });
   }
 };
 

@@ -1,56 +1,75 @@
 import TodoType from '../types/todo';
 
-export const addTodoItem = async (todo: TodoType) => {
+const getHeaders = () => {
+  return { 'Content-Type': 'application/json' };
+};
+
+export const addTodoItem = async (todo: TodoType, csrfToken: string) => {
   const requestOptions = {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'XSRF-TOKEN': csrfToken },
     body: JSON.stringify({ todo: { ...todo } }),
   };
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_HOST}/api/todo`,
+      requestOptions
+    );
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST}/api/todo`,
-    requestOptions
-  );
-
-  if (!response.ok) {
-    throw new Error('Add Todo Failed ');
+    if (!response.ok) {
+      const error = await response.json();
+      throw error;
+    }
+    const data = await response.json();
+    return { data };
+  } catch (err) {
+    return { err };
   }
-
-  return await response.json();
 };
 
 export const updateTodoItem = async (todo: TodoType) => {
   const requestOptions = {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getHeaders(),
     body: JSON.stringify({ todo: { ...todo } }),
   };
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_HOST}/api/todo/${todo.slug}`,
+      requestOptions
+    );
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST}/api/todo/${todo.slug}`,
-    requestOptions
-  );
+    if (!response.ok) {
+      const error = await response.json();
+      throw error;
+    }
 
-  if (!response.ok) {
-    throw new Error('Todo Update Failed');
+    const data = await response.json();
+    return { data };
+  } catch (err) {
+    return { err };
   }
-
-  return await response.json();
 };
 
 export const deleteTodoItem = async (slug: string) => {
   const requestOptions = {
     method: 'DELETE',
+    headers: getHeaders(),
   };
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_HOST}/api/todo/${slug}`,
+      requestOptions
+    );
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST}/api/todo/${slug}`,
-    requestOptions
-  );
+    if (!response.ok) {
+      const error = await response.json();
+      throw error;
+    }
 
-  if (!response.ok) {
-    throw new Error('Delete Failed ');
+    const data = await response.json();
+    return { data };
+  } catch (err) {
+    return { err };
   }
-
-  return await response.json();
 };

@@ -10,31 +10,55 @@ import {
   updateTodoItem,
 } from '../services/todoService';
 import TodoList from '../components/todoList/todoList';
+import withSession from '../lib/session';
+import UserType from '../types/user';
+import { GetServerSideProps } from 'next';
+import ErrorModal from '../components/modal/modal';
 
 type Props = {
   todoList: TodoType[];
+  csrfToken: string;
+  user: UserType;
 };
 
-const Home = ({ todoList }: Props) => {
+const Home = ({ todoList, csrfToken, user }: Props) => {
   const [todos, setTodos] = useState(todoList);
+  const [modal, setModal] = useState({ show: false, content: '' });
 
   const addTodo = async (todo: TodoType) => {
-    const data = await addTodoItem(todo);
+    const { data = undefined, err = undefined } = await addTodoItem(
+      todo,
+      csrfToken
+    );
     if (data) setTodos(data);
+
+    if (err) {
+      setModal({ show: true, content: err.error });
+    }
   };
 
   const deleteTodo = async (slug: string) => {
-    const data = await deleteTodoItem(slug);
+    const { data = undefined, err = undefined } = await deleteTodoItem(slug);
+
     if (data) setTodos(data);
+
+    if (err) {
+      setModal({ show: true, content: err.error });
+    }
   };
 
   const updateTodoStatus = async (todo: TodoType) => {
-    const data = await updateTodoItem(todo);
+    const { data = undefined, err = undefined } = await updateTodoItem(todo);
+
     if (data) setTodos(data);
+
+    if (err) {
+      setModal({ show: true, content: err.error });
+    }
   };
 
   return (
-    <Layout title={'ToDo Home'}>
+    <Layout title={'ToDo Home'} isAuthenticated={user.isLoggedIn}>
       <Container maxWidth="md">
         <TodoForm handleTodo={addTodo} />
         <TodoList
@@ -43,13 +67,36 @@ const Home = ({ todoList }: Props) => {
           updateTodoStatus={updateTodoStatus}
         />
       </Container>
+      {modal?.show && (
+        <ErrorModal
+          show={modal?.show}
+          content={modal?.content}
+          setModal={setModal}
+        />
+      )}
     </Layout>
   );
 };
 
-export async function getServerSideProps() {
-  const todoList = fetchTodos();
-  return { props: { todoList } };
-}
+export const getServerSideProps: GetServerSideProps = withSession(
+  async ({ req, res }: any) => {
+    const user = req.session.get('user');
+
+    if (!user) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+
+    const todoList = fetchTodos();
+
+    return {
+      props: { user: req.session.get('user'), todoList },
+    };
+  }
+);
 
 export default Home;

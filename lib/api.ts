@@ -1,6 +1,7 @@
 import TodoType from '../types/todo';
 
 import fs from 'fs';
+import UserType from '../types/user';
 
 // add a todo item //
 export const addTodo = (todo: TodoType) => {
@@ -59,7 +60,28 @@ export const fetchTodos = () => {
 };
 
 export const saveTodos = (todos: TodoType[]) => {
+  if (!todos?.length) return;
   const databaseJson = JSON.stringify(todos);
   const filePath = `${process.cwd()}/data/todos.json`;
   fs.writeFileSync(filePath, databaseJson);
+};
+
+export const fetchUsers = () => {
+  try {
+    const filePath = `${process.cwd()}/data/users.json`;
+    const fileContents = fs.readFileSync(filePath, 'utf8');
+    return JSON.parse(fileContents);
+  } catch (e) {
+    return [];
+  }
+};
+
+export const findUser = (
+  email: string,
+  password: string,
+  users: UserType[]
+) => {
+  return users?.filter(
+    (user) => user.email === email && user.password === password
+  );
 };

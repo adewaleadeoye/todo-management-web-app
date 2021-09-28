@@ -3,7 +3,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Head from 'next/head';
-import { Container } from '@material-ui/core';
+import { Button, Container } from '@material-ui/core';
+import { logoutUser } from '../../services/userService';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles({
   toolbar: {
@@ -18,10 +20,18 @@ const useStyles = makeStyles({
 type Props = {
   children: React.ReactNode;
   title: string;
+  isAuthenticated: boolean;
 };
 
-const Layout = ({ children, title }: Props) => {
+const Layout = ({ children, title, isAuthenticated }: Props) => {
   const classes = useStyles();
+  const router = useRouter();
+
+  const logout = async () => {
+    await logoutUser();
+    router.push('/');
+  };
+
   return (
     <>
       <Head>
@@ -35,6 +45,11 @@ const Layout = ({ children, title }: Props) => {
             <Typography className={classes.heading} variant="h5" align="center">
               Todo App
             </Typography>
+            {isAuthenticated && (
+              <Button variant="contained" color="secondary" onClick={logout}>
+                Logout
+              </Button>
+            )}
           </Toolbar>
         </Container>
       </AppBar>

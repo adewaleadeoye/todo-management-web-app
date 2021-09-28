@@ -51,7 +51,7 @@ const TodoList = ({ todoList = [], deleteTodo, updateTodoStatus }: Props) => {
         <List>
           {todoList.map((todo) => {
             return (
-              <ListItem key={todo.slug} button>
+              <ListItem key={todo?.slug} button>
                 <ListItemIcon>
                   <IconButton
                     edge="end"

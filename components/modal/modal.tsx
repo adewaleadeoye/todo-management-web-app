@@ -16,15 +16,15 @@ const style = {
   p: 4,
 };
 type Props = {
-  show: Boolean;
+  show: boolean;
   content: string;
+  setModal: Function;
 };
-const ErrorModal = ({ show, content }: Props) => {
-  const [open, setOpen] = useState(false);
-  const handleClose = () => setOpen(false);
+const ErrorModal = ({ show, content, setModal }: Props) => {
+  const handleClose = () => setModal({ show: false, content: '' });
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={show} onClose={handleClose}>
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="p">
           {content}
