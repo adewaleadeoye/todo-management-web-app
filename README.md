@@ -1,34 +1,28 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Todo Management App.
 
-## Getting Started
+### Two ways to run this app
 
-First, run the development server:
+#### With NPM
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+To run this solution you need to have NodeJs and NPM running on your system.
+[Get both](https://nodejs.org/en/download/)
+
+Once they are installed.
+
+- Open your terminal and change to the solution directory
+- Install node modules with `npm install`
+- From the project directory, run `npm run dev`
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### With Docker (Not recommended at the moment)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+(Known issue - server is currently using the wrong ip address. Just adding it here to show where I had to stop because of time)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Ensure [docker](https://www.docker.com/products/docker-desktop) is installed and running on your system.
 
-## Learn More
+- Open your terminal and change to the solution directory
+- Run `docker build -t todo-app .` to build the container
+- Then run `docker run -p 3000:3000 todo-app` to get the app up and running
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
