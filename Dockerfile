@@ -5,6 +5,7 @@ FROM node:14-buster-slim
 ENV HOME=/home/node/app
 ENV NODE_ENV=development
 ENV NODE_PORT=3000
+ENV NEXT_PUBLIC_HOST=http://localhost:$NODE_PORT
 
 # create application folder and assign rights to the node user
 RUN mkdir -p $HOME && chown -R node:node $HOME

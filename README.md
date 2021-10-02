@@ -15,9 +15,7 @@ Once they are installed.
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### With Docker (Not recommended at the moment)
-
-(Known issue - server is currently using the wrong ip address. Just adding it here to show where I had to stop because of time)
+### With Docker
 
 Ensure [docker](https://www.docker.com/products/docker-desktop) is installed and running on your system.
 
