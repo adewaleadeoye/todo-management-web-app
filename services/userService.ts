@@ -1,4 +1,7 @@
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (
+  email: string,
+  password: string
+): Promise<any> => {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

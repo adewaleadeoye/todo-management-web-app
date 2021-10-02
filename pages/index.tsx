@@ -33,7 +33,7 @@ const Home = ({ todoList, csrfToken, user }: Props) => {
     if (data) setTodos(data);
 
     if (err) {
-      setModal({ show: true, content: err.error });
+      setModal({ show: true, content: err?.error });
     }
   };
 
@@ -43,7 +43,7 @@ const Home = ({ todoList, csrfToken, user }: Props) => {
     if (data) setTodos(data);
 
     if (err) {
-      setModal({ show: true, content: err.error });
+      setModal({ show: true, content: err?.error });
     }
   };
 
@@ -53,7 +53,7 @@ const Home = ({ todoList, csrfToken, user }: Props) => {
     if (data) setTodos(data);
 
     if (err) {
-      setModal({ show: true, content: err.error });
+      setModal({ show: true, content: err?.error });
     }
   };
 

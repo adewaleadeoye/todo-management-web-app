@@ -4,7 +4,10 @@ const getHeaders = () => {
   return { 'Content-Type': 'application/json' };
 };
 
-export const addTodoItem = async (todo: TodoType, csrfToken: string) => {
+export const addTodoItem = async (
+  todo: TodoType,
+  csrfToken: string
+): Promise<any> => {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'XSRF-TOKEN': csrfToken },
@@ -27,7 +30,7 @@ export const addTodoItem = async (todo: TodoType, csrfToken: string) => {
   }
 };
 
-export const updateTodoItem = async (todo: TodoType) => {
+export const updateTodoItem = async (todo: TodoType): Promise<any> => {
   const requestOptions = {
     method: 'PUT',
     headers: getHeaders(),
@@ -51,7 +54,7 @@ export const updateTodoItem = async (todo: TodoType) => {
   }
 };
 
-export const deleteTodoItem = async (slug: string) => {
+export const deleteTodoItem = async (slug: string): Promise<any> => {
   const requestOptions = {
     method: 'DELETE',
     headers: getHeaders(),
