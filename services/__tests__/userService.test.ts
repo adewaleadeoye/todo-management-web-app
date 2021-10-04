@@ -2,7 +2,7 @@ import { expect, jest } from '@jest/globals';
 import { loginUser } from '../userService';
 
 describe('loginUser', () => {
-  it('should return no data after', async () => {
+  it('should return data on login', async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: true,
@@ -11,9 +11,9 @@ describe('loginUser', () => {
     );
 
     // global.console.error = jest.fn();
-    expect(await loginUser('some@email.com', 'somepassword')).toEqual(
-      undefined
-    );
+    expect(await loginUser('some@email.com', 'somepassword')).toEqual({
+      data: 'data',
+    });
   });
   it('should throw an error ', async () => {
     global.fetch = jest.fn(() =>
