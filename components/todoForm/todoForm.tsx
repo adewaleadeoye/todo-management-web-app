@@ -36,9 +36,10 @@ type Props = {
   todo?: TodoType;
   edit?: Boolean;
   handleTodo: Function;
+  csrfToken: string;
 };
 
-const TodoForm = ({ todo, edit = false, handleTodo }: Props) => {
+const TodoForm = ({ todo, edit = false, handleTodo, csrfToken }: Props) => {
   const classes = useStyles();
 
   const router = useRouter();
@@ -71,18 +72,23 @@ const TodoForm = ({ todo, edit = false, handleTodo }: Props) => {
 
   const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    handleTodo({
-      todoTitle,
-      todoDueDate,
-      todoStatus,
-      slug: edit ? todo?.slug : slugify(todoTitle),
-    });
+    const xCsrf = e.currentTarget.csrfToken.value;
+    handleTodo(
+      {
+        todoTitle,
+        todoDueDate,
+        todoStatus,
+        slug: edit ? todo?.slug : slugify(todoTitle),
+      },
+      xCsrf
+    );
     resetForm();
   };
 
   return (
     <Container maxWidth="sm" className={classes.root}>
       <form onSubmit={handleSubmit} id="myForm" name="myForm">
+        <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
         <Grid container spacing={3}>
           <Grid item md={12}>
             <TextField

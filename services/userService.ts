@@ -1,3 +1,10 @@
+import UserType from '../types/user';
+
+type UserParams = {
+  email: string;
+  password: string;
+};
+
 export const loginUser = async (
   email: string,
   password: string
@@ -18,7 +25,7 @@ export const loginUser = async (
       const error = await response.json();
       throw error;
     }
-    return;
+    return await response.json();
   } catch (err) {
     return err;
   }

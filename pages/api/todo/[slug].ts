@@ -1,8 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { deleteTodo, fetchTodos, updateTodo } from '../../../lib/api';
+import verifyNextAuthCsrfToken from '../../../lib/csrf';
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   const slug = req.query.slug;
+
+  const csrfToken: any = req.headers['x-csrf-token'];
+
+  const isCsrfValid = verifyNextAuthCsrfToken(req, csrfToken);
+  if (!isCsrfValid)
+    return res.status(403).json({ error: 'Operation is forbidden' });
+
   try {
     if (req.method === 'DELETE') {
       const todoDeleted = deleteTodo(slug);

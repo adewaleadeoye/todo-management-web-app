@@ -24,21 +24,27 @@ type Props = {
   todoList: TodoType[];
   deleteTodo: Function;
   updateTodoStatus: Function;
+  csrfToken: string;
 };
 
-const TodoList = ({ todoList = [], deleteTodo, updateTodoStatus }: Props) => {
+const TodoList = ({
+  todoList = [],
+  deleteTodo,
+  updateTodoStatus,
+  csrfToken,
+}: Props) => {
   const classes = useStyles();
   const router = useRouter();
 
   const handleDelete = (todo: TodoType) => {
     const answer = confirm('Are you sure you want to delete this post?');
     if (!answer) return;
-    deleteTodo(todo.slug);
+    deleteTodo(todo.slug, csrfToken);
   };
 
   const handleChangeStatus = (todo: TodoType) => {
     todo.todoStatus = todo.todoStatus === 'done' ? 'unfinished' : 'done';
-    updateTodoStatus(todo);
+    updateTodoStatus(todo, csrfToken);
   };
 
   return (

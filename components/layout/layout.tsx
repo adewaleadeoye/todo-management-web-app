@@ -6,6 +6,7 @@ import Head from 'next/head';
 import { Button, Container } from '@material-ui/core';
 import { logoutUser } from '../../services/userService';
 import { useRouter } from 'next/router';
+import { signOut } from 'next-auth/client';
 
 const useStyles = makeStyles({
   toolbar: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles({
 type Props = {
   children: React.ReactNode;
   title: string;
-  isAuthenticated: boolean;
+  isAuthenticated?: boolean;
 };
 
 const Layout = ({ children, title, isAuthenticated }: Props) => {
@@ -28,8 +29,8 @@ const Layout = ({ children, title, isAuthenticated }: Props) => {
   const router = useRouter();
 
   const logout = async () => {
-    await logoutUser();
-    router.push('/');
+    const data = await signOut({ redirect: false, callbackUrl: '/login' });
+    router.push(data.url);
   };
 
   return (

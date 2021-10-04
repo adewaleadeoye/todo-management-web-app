@@ -1,18 +1,19 @@
+import { GetServerSideProps } from 'next';
 import { Container } from '@material-ui/core';
+import { useState } from 'react';
+import { useSession, getSession, getCsrfToken } from 'next-auth/client';
+
 import Layout from '../components/layout/layout';
 import TodoForm from '../components/todoForm/todoForm';
 import TodoType from '../types/todo';
 import { fetchTodos } from '../lib/api';
-import { useState } from 'react';
 import {
   addTodoItem,
   deleteTodoItem,
   updateTodoItem,
 } from '../services/todoService';
 import TodoList from '../components/todoList/todoList';
-import withSession from '../lib/session';
 import UserType from '../types/user';
-import { GetServerSideProps } from 'next';
 import ErrorModal from '../components/modal/modal';
 
 type Props = {
@@ -21,14 +22,15 @@ type Props = {
   user: UserType;
 };
 
-const Home = ({ todoList, csrfToken, user }: Props) => {
+const Home = ({ todoList, csrfToken }: Props) => {
+  const [session] = useSession();
   const [todos, setTodos] = useState(todoList);
   const [modal, setModal] = useState({ show: false, content: '' });
 
-  const addTodo = async (todo: TodoType) => {
+  const addTodo = async (todo: TodoType, xCsrf: string) => {
     const { data = undefined, err = undefined } = await addTodoItem(
       todo,
-      csrfToken
+      xCsrf
     );
     if (data) setTodos(data);
 
@@ -37,8 +39,11 @@ const Home = ({ todoList, csrfToken, user }: Props) => {
     }
   };
 
-  const deleteTodo = async (slug: string) => {
-    const { data = undefined, err = undefined } = await deleteTodoItem(slug);
+  const deleteTodo = async (slug: string, xCsrf: string) => {
+    const { data = undefined, err = undefined } = await deleteTodoItem(
+      slug,
+      xCsrf
+    );
 
     if (data) setTodos(data);
 
@@ -47,8 +52,11 @@ const Home = ({ todoList, csrfToken, user }: Props) => {
     }
   };
 
-  const updateTodoStatus = async (todo: TodoType) => {
-    const { data = undefined, err = undefined } = await updateTodoItem(todo);
+  const updateTodoStatus = async (todo: TodoType, xCsrf: string) => {
+    const { data = undefined, err = undefined } = await updateTodoItem(
+      todo,
+      xCsrf
+    );
 
     if (data) setTodos(data);
 
@@ -58,13 +66,14 @@ const Home = ({ todoList, csrfToken, user }: Props) => {
   };
 
   return (
-    <Layout title={'ToDo Home'} isAuthenticated={user.isLoggedIn}>
+    <Layout title={'ToDo Home'} isAuthenticated={session ? true : false}>
       <Container maxWidth="md">
-        <TodoForm handleTodo={addTodo} />
+        <TodoForm handleTodo={addTodo} csrfToken={csrfToken} />
         <TodoList
           todoList={todos}
           deleteTodo={deleteTodo}
           updateTodoStatus={updateTodoStatus}
+          csrfToken={csrfToken}
         />
       </Container>
       {modal?.show && (
@@ -78,25 +87,21 @@ const Home = ({ todoList, csrfToken, user }: Props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req, res }: any) => {
-    const user = req.session.get('user');
-
-    if (!user) {
-      return {
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        },
-      };
-    }
-
-    const todoList = fetchTodos();
-
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+  if (!session) {
     return {
-      props: { user: req.session.get('user'), todoList },
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
     };
   }
-);
+  const todoList = fetchTodos();
+  const csrfToken = await getCsrfToken(context);
+  return {
+    props: { session, todoList, csrfToken },
+  };
+};
 
 export default Home;
