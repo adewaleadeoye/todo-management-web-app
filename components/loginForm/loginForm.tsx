@@ -1,17 +1,13 @@
 import { Button, Container, Grid, TextField } from '@material-ui/core';
-import { ChangeEvent } from 'react';
 
 type Props = {
   errorMessage: string;
-  onSubmit: Function;
+  csrfToken: string;
 };
-const LoginForm = ({ errorMessage, onSubmit }: Props) => {
-  const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
-    onSubmit(e);
-  };
+const LoginForm = ({ errorMessage, csrfToken }: Props) => {
   return (
     <Container maxWidth="xs">
-      <form onSubmit={handleSubmit}>
+      <form method="post" action="/api/auth/callback/credentials">
         <Grid container spacing={3}>
           <Grid item md={12}>
             <TextField
@@ -43,7 +39,7 @@ const LoginForm = ({ errorMessage, onSubmit }: Props) => {
             </Button>
           </Grid>
         </Grid>
-
+        <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
         {errorMessage && <p className="error">{errorMessage}</p>}
       </form>
     </Container>

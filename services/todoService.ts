@@ -4,10 +4,13 @@ const getHeaders = () => {
   return { 'Content-Type': 'application/json' };
 };
 
-export const addTodoItem = async (todo: TodoType, csrfToken: string) => {
+export const addTodoItem = async (
+  todo: TodoType,
+  xCsrf: string
+): Promise<any> => {
   const requestOptions = {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'XSRF-TOKEN': csrfToken },
+    headers: { ...getHeaders(), 'X-CSRF-TOKEN': xCsrf },
     body: JSON.stringify({ todo: { ...todo } }),
   };
   try {
@@ -27,10 +30,13 @@ export const addTodoItem = async (todo: TodoType, csrfToken: string) => {
   }
 };
 
-export const updateTodoItem = async (todo: TodoType) => {
+export const updateTodoItem = async (
+  todo: TodoType,
+  xCsrf: string
+): Promise<any> => {
   const requestOptions = {
     method: 'PUT',
-    headers: getHeaders(),
+    headers: { ...getHeaders(), 'X-CSRF-TOKEN': xCsrf },
     body: JSON.stringify({ todo: { ...todo } }),
   };
   try {
@@ -51,10 +57,13 @@ export const updateTodoItem = async (todo: TodoType) => {
   }
 };
 
-export const deleteTodoItem = async (slug: string) => {
+export const deleteTodoItem = async (
+  slug: string,
+  xCsrf: string
+): Promise<any> => {
   const requestOptions = {
     method: 'DELETE',
-    headers: getHeaders(),
+    headers: { ...getHeaders(), 'X-CSRF-TOKEN': xCsrf },
   };
   try {
     const response = await fetch(

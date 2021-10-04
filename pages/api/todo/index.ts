@@ -1,12 +1,17 @@
 import { fetchTodos, findTodo, saveTodos } from '../../../lib/api';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { csrf } from '../../../lib/csrf';
+import verifyNextAuthCsrfToken from '../../../lib/csrf';
 
-const handler = (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const todo = req.body.todo;
-    const todos = fetchTodos();
 
+    const csrfToken: any = req.headers['x-csrf-token'];
+    const isCsrfValid = verifyNextAuthCsrfToken(req, csrfToken);
+    if (!isCsrfValid)
+      return res.status(403).json({ error: 'Operation is forbidden' });
+
+    const todos = fetchTodos();
     const multipleTodos = findTodo(todo?.slug, todos);
 
     if (multipleTodos?.length === 0) {

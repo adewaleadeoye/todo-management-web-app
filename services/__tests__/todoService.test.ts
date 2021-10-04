@@ -1,6 +1,6 @@
 import { expect, jest } from '@jest/globals';
 import { addTodoItem, updateTodoItem, deleteTodoItem } from '../todoService';
-
+const xCsrf = 'some-long-token';
 describe('updateTodoItem', () => {
   it('should return no data after', async () => {
     global.fetch = jest.fn(() =>
@@ -19,12 +19,15 @@ describe('updateTodoItem', () => {
     );
 
     expect(
-      await updateTodoItem({
-        slug: 'some-title',
-        todoTitle: 'Some Title',
-        todoDueDate: '27/09/2021',
-        todoStatus: 'unfinished',
-      })
+      await updateTodoItem(
+        {
+          slug: 'some-title',
+          todoTitle: 'Some Title',
+          todoDueDate: '27/09/2021',
+          todoStatus: 'unfinished',
+        },
+        xCsrf
+      )
     ).toEqual({
       data: [
         {
@@ -47,7 +50,7 @@ describe('deleteTodoItem', () => {
       })
     );
 
-    expect(await deleteTodoItem('some-title')).toEqual({
+    expect(await deleteTodoItem('some-title', xCsrf)).toEqual({
       data: [],
     });
   });
@@ -78,7 +81,7 @@ describe('addTodoItem', () => {
           todoDueDate: '27/09/2021',
           todoStatus: 'unfinished',
         },
-        'sometoken'
+        xCsrf
       )
     ).toEqual({
       data: [
