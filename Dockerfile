@@ -6,6 +6,8 @@ ENV HOME=/home/node/app
 ENV NODE_ENV=development
 ENV NODE_PORT=3000
 ENV NEXT_PUBLIC_HOST=http://localhost:$NODE_PORT
+ENV NEXT_PUBLIC_SECRET=5bd40b68b8bca7cd010299de4199857b859ca383790729ddc1951fbfcb85c3f0e93953
+ENV NEXTAUTH_URL=http://localhost:$NODE_PORT
 
 # create application folder and assign rights to the node user
 RUN mkdir -p $HOME && chown -R node:node $HOME
